@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Order History - Our Store</title>
+
+
+  <script>
+  const user = localStorage.getItem("loggedInUser");
+
+  if (!user) {
+    window.location.href = "login.html";
+  }
+</script>
+
+
+
+
+  <!-- Font Awesome -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+  />
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+  <!-- AMAZON-STYLE NAVBAR -->
+  <header class="navbar">
+    <div class="logo">
+      <a href="index.html" style="color:white;text-decoration:none;">OurStore</a>
+    </div>
+
+    <div class="nav-links">
+
+      <a href="index.html" class="back-shop-btn">
+  Back to Shop
+</a>
+
+      
+
+      <a href="cart.html">
+        <i class="fas fa-shopping-cart"></i>
+        (<span id="cart-count">0</span>)
+      </a>
+      <span style="margin-left:10px;">
+        ₹<span id="cart-total">0</span>
+      </span>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <div class="container">
+
+    <h2>Your Orders</h2>
+
+    <div id="order-history"></div>
+
+    <a href="index.html" class="btn secondary">Back to Store</a>
+
+  </div>
+
+  <!-- JS -->
+  <script src="js/cart.js"></script>
+  <script src="js/order-history.js"></script>
+
+
+</body>
+</html>

@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+  <title>Our Store</title>
+
+
+<script>
+  if (!localStorage.getItem("loggedInUser")) {
+    window.location.href = "login.html";
+  }
+</script>
+
+
+
+
+
+
+
+
+  <!-- Font Awesome -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+  />
+
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<header class="navbar">
+
+  <div class="logo">
+    <a href="index.html" style="color:white;text-decoration:none;">OurStore</a>
+  </div>
+
+  <input
+    type="text"
+    id="searchInput"
+    class="search-bar"
+    placeholder="Search products..."
+    onkeyup="searchProducts()"
+  />
+
+  <div class="nav-links">
+
+    <a href="wishlist.html">
+      <i class="fas fa-bookmark"></i>
+    </a>
+
+    <div id="chatbot-btn" class="chat-nav-btn">
+      <i class="fas fa-robot"></i>
+    </div>
+
+    <button id="orderHistoryBtn" class="order-history-btn">
+      🧾 Orders
+    </button>
+
+    <a href="cart.html">
+      <i class="fas fa-shopping-cart"></i>
+      (<span id="cart-count">0</span>)
+    </a>
+
+    <button onclick="logout()">Logout</button>
+
+  </div>
+
+</header>
+
+
+
+
+<!-- IMAGE SLIDER -->
+<section class="slider">
+  <div class="slides active" style="background-image: url('assets/images/slider1.jpeg');">
+    <div class="slide-content">
+      <a href="womens.html" class="btn success" style="width:auto;padding:12px 30px;">Shop Women's Collection</a>
+    </div>
+  </div>
+
+ <div class="slides" style="background-image: url('assets/images/slider2.jpeg');">
+    <div class="slide-content">
+      <a href="mens.html" class="btn success" style="width:auto;padding:12px 30px;">Shop Men's Collection</a>
+    </div>
+  </div>
+
+  <div class="slides" style="background-image: url('assets/images/slider3.jpeg');">
+    <div class="slide-content">
+    </div>
+  </div>
+
+  <div class="slides" style="background-image: url('assets/images/slider4.jpeg');">
+    <div class="slide-content">
+    </div>
+  </div>
+
+  <!-- Arrows -->
+  <span class="arrow left" onclick="prevSlide()">&#10094;</span>
+  <span class="arrow right" onclick="nextSlide()">&#10095;</span>
+
+  <!-- Dots -->
+  <div class="dots">
+    <span onclick="goToSlide(0)"></span>
+    <span onclick="goToSlide(1)"></span>
+    <span onclick="goToSlide(2)"></span>
+    <span onclick="goToSlide(3)"></span>
+  </div>
+</section>
+
+
+
+
+  
+
+  <!-- MAIN CONTENT -->
+  <div class="container" id="products">
+    <h2 class="section-title">Featured Products</h2>
+
+    <section class="product-grid" id="productContainer">
+      <!-- Products rendered by JS -->
+    </section>
+  </div>
+
+  <!-- CART TOAST -->
+  <div id="cartToast" class="cart-toast">
+    <i class="fas fa-check-circle"></i>
+    <span>Item added to cart</span>
+  </div>
+
+
+
+<!-- WISHLIST TOAST -->
+<div id="wishlistToast" class="cart-toast" style="bottom: 80px;">
+  <i class="fas fa-bookmark"></i>
+  <span>Added to Wishlist!</span>
+</div>
+
+
+
+  <!-- SCRIPTS -->
+   <script src="js/cart.js"></script>
+  <script src="js/products.js"></script>
+  <script src="js/ai.js"></script>
+  <script src="js/slider.js"></script>
+
+  <script>
+    document
+      .getElementById("orderHistoryBtn")
+      .addEventListener("click", () => {
+        window.location.href = "order-history.html";
+      });
+
+ function logout() {
+    localStorage.removeItem("loggedInUser");
+    window.location.href = "login.html";
+  }
+
+  </script>
+
+
+
+
+
+
+
+<!-- MODERN AI CHATBOX -->
+<div id="chatbox" class="chatbox">
+
+  <div class="chat-header">
+    🤖 AI Assistant
+    <span id="closeChat">✖</span>
+  </div>
+
+  <div id="aiChat" class="chat-messages"></div>
+
+
+  <div class="chat-input-area">
+    <input type="text" id="chat-input" placeholder="Ask me anything...">
+    <button id="voiceBtn">🎤</button>
+    <button onclick="sendMessage()">➤</button>
+  </div>
+
+</div>
+
+
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  const voiceBtn = document.getElementById("voiceBtn");
+
+  voiceBtn.onclick = () => {
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+
+    recognition.lang = "en-US";
+    recognition.start();
+
+    recognition.onresult = function(event) {
+      document.getElementById("chat-input").value = event.results[0][0].transcript;
+    };
+  };
+
+});
+</script>
+
+
+<script>
+
+function sendMessage() {
+  const input = document.getElementById("chat-input");
+  const msg = input.value.toLowerCase().trim();
+  if (!msg) return;
+
+  addChat("user", msg);
+
+  let response = "Sorry, I didn't understand.";
+
+  // NORMAL SEARCH
+  let results = products.filter(p =>
+    p.name.toLowerCase().includes(msg)
+  );
+
+  // SMART FILTERS
+  if (msg.includes("cheap") || msg.includes("under")) {
+    results = products.filter(p => p.price <= 2000);
+  }
+
+  if (msg.includes("expensive") || msg.includes("above")) {
+    results = products.filter(p => p.price >= 3000);
+  }
+
+  if (msg.includes("gift")) {
+    results = products.filter(p => p.price <= 2500);
+  }
+
+  // SHOW RESULTS
+  if (results.length > 0) {
+    response = "I found these products:<br>";
+
+    results.forEach(p => {
+      response += `• ${p.name} — ₹${p.price}<br>`;
+    });
+
+    
+  }
+
+  if (results.length > 0) {
+  setTimeout(() => addChat("bot", response), 500);
+} else {
+
+  fetch("https://ai-server-ab9y.onrender.com/chat", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ message: msg })
+  })
+  .then(res => res.json())
+  .then(data => {
+    addChat("bot", data.reply);
+  })
+  .catch(() => {
+    addChat("bot", "Server error. Try again.");
+  });
+
+}
+
+input.value = "";
+
+}
+function addChat(type, text) {
+  const chat = document.getElementById("aiChat");
+  const msg = document.createElement("div");
+  msg.className = "chat-msg " + type;
+  msg.innerHTML = text;
+  chat.appendChild(msg);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+
+
+
+
+
+function scrollToProduct(productId) {
+  const element = document.getElementById("product-" + productId);
+
+  if (element) {
+    element.scrollIntoView({
+      behavior: "smooth",
+      block: "center"
+    });
+
+    element.style.border = "3px solid #28a745";
+
+    setTimeout(() => {
+      element.style.border = "";
+    }, 2000);
+  }
+}
+
+
+
+
+
+</script>
+
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const btn = document.getElementById("chatbot-btn");
+  const box = document.getElementById("chatbox");
+  const closeBtn = document.getElementById("closeChat");
+
+  btn.addEventListener("click", () => {
+    box.style.display = "flex";
+  });
+
+  closeBtn.addEventListener("click", () => {
+    box.style.display = "none";
+  });
+
+});
+</script>
+
+
+<!-- FEATURES STRIP (NEW) -->
+  <section class="features">
+    <div class="feature">
+      <i class="fas fa-truck"></i>
+      <h4>Fast Delivery</h4>
+      <p>Quick and reliable shipping</p>
+    </div>
+
+    <div class="feature">
+      <i class="fas fa-lock"></i>
+      <h4>Secure Payments</h4>
+      <p>100% safe checkout</p>
+    </div>
+
+    <div class="feature">
+      <i class="fas fa-headset"></i>
+      <h4>24/7 Support</h4>
+      <p>We are here to help</p>
+    </div>
+  </section>
+
+</body>
+</html>

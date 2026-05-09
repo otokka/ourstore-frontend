@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+  <title>Login | Our Store</title>
+
+
+  
+
+
+
+  <link rel="stylesheet" href="css/auth.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body class="auth-body">
+
+  <div class="auth-container">
+
+    <h1 class="brand">Our Store</h1>
+
+    <h2>Login</h2>
+    <p class="subtitle">Sign in to continue</p>
+
+    
+
+
+<input type="email" id="loginEmail" placeholder="Email">
+<input type="password" id="loginPassword" placeholder="Password">
+
+<button type="button" onclick="login()">Log in</button>
+
+
+
+
+
+    <p class="switch">
+      Don’t have an account?
+      <a href="signup.html">Sign up</a>
+    </p>
+
+  </div>
+
+
+
+  <script>
+document.addEventListener("DOMContentLoaded", function () {
+  const loggedUser = localStorage.getItem("loggedInUser");
+
+  if (loggedUser && loggedUser !== "null") {
+    window.location.href = "index.html";
+  }
+});
+</script>
+
+
+
+
+  <script src="js/auth.js"></script>
+</body>
+</html>

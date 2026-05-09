@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Men's Collection - OurStore</title>
+
+  <script>
+    if (!localStorage.getItem("loggedInUser")) {
+      window.location.href = "login.html";
+    }
+  </script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<header class="navbar">
+  <div class="logo">
+    <a href="index.html" style="color:white;text-decoration:none;">OurStore</a>
+  </div>
+
+  <input
+    type="text"
+    id="searchInput"
+    class="search-bar"
+    placeholder="Search men's products..."
+    onkeyup="searchProducts()"
+  />
+
+  <div class="nav-links">
+    <a href="index.html" class="back-shop-btn">Back to Shop</a>
+    <a href="wishlist.html">
+      <i class="fas fa-bookmark"></i>
+    </a>
+    <a href="cart.html">
+      <i class="fas fa-shopping-cart"></i>
+      (<span id="cart-count">0</span>)
+    </a>
+    <button onclick="logout()" style="background:transparent;border:1px solid white;color:white;padding:6px 12px;border-radius:4px;cursor:pointer;">Logout</button>
+  </div>
+</header>
+
+<!-- PRODUCTS -->
+<div class="container">
+  <h2 class="section-title">Men's Collection</h2>
+  <section class="product-grid" id="productContainer"></section>
+</div>
+
+<!-- CART TOAST -->
+<div id="cartToast" class="cart-toast">
+  <i class="fas fa-check-circle"></i>
+  <span>Item added to cart</span>
+</div>
+
+
+
+<!-- WISHLIST TOAST -->
+<div id="wishlistToast" class="cart-toast" style="bottom: 80px;">
+  <i class="fas fa-bookmark"></i>
+  <span>Added to Wishlist!</span>
+</div>
+
+
+
+<!-- SCRIPTS -->
+<script src="js/products.js"></script>
+<script src="js/cart.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    renderProducts(products.filter(p => p.category === "mens"));
+  });
+
+  function searchProducts() {
+    const query = document.getElementById("searchInput").value.trim().toLowerCase();
+    const mensFiltered = products.filter(p =>
+      p.category === "mens" && p.name.toLowerCase().includes(query)
+    );
+    renderProducts(mensFiltered);
+  }
+
+  function logout() {
+    localStorage.removeItem("loggedInUser");
+    window.location.href = "login.html";
+  }
+</script>
+
+
+<!-- FEATURES STRIP -->
+<section class="features" style="margin-top:40px;">
+  <div class="feature">
+    <i class="fas fa-truck"></i>
+    <h4>Fast Delivery</h4>
+    <p>Quick and reliable shipping</p>
+  </div>
+  <div class="feature">
+    <i class="fas fa-lock"></i>
+    <h4>Secure Payments</h4>
+    <p>100% safe checkout</p>
+  </div>
+  <div class="feature">
+    <i class="fas fa-headset"></i>
+    <h4>24/7 Support</h4>
+    <p>We are here to help</p>
+  </div>
+</section>
+
+
+</body>
+</html>

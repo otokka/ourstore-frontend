@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Your Cart - Our Store</title>
+
+
+
+<script>
+  const user = localStorage.getItem("loggedInUser");
+
+  if (!user) {
+    window.location.href = "login.html";
+  }
+</script>
+
+
+
+  <!-- Font Awesome -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+  />
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+  <!-- AMAZON-STYLE NAVBAR (NO SEARCH HERE) -->
+  <header class="navbar">
+    <div class="logo">
+      <a href="index.html" style="color:white;text-decoration:none;">OurStore</a>
+    </div>
+
+    <div class="nav-links">
+
+      <a href="index.html" class="back-shop-btn">
+  Back to Shop
+</a>
+
+      <a href="wishlist.html">
+        <i class="fas fa-bookmark"></i>
+      </a>
+
+      <a href="cart.html">
+        <i class="fas fa-shopping-cart"></i>
+        (<span id="cart-count">0</span>)
+      </a>
+      
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <div class="container">
+
+    <h2>Your Shopping Cart</h2>
+
+    <!-- Cart items load here -->
+    <div id="cart-items"></div>
+
+    
+
+    <a href="checkout.html" class="btn success">Proceed to Checkout</a>
+
+  </div>
+
+  <!-- JS -->
+  <script src="js/cart.js"></script>
+
+</body>
+</html>

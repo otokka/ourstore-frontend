@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Details</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+
+  <script>
+    if (!localStorage.getItem("loggedInUser")) {
+      window.location.href = "login.html";
+    }
+  </script>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<header class="navbar">
+  <div class="logo">
+    <a href="index.html" style="color:white;text-decoration:none;">OurStore</a>
+  </div>
+  <div class="nav-links">
+    <a href="wishlist.html">
+      <i class="fas fa-bookmark"></i>
+    </a>
+    <a href="cart.html">
+      <i class="fas fa-shopping-cart"></i>
+      (<span id="cart-count">0</span>)
+    </a>
+    <button onclick="window.history.back()" class="order-history-btn">Back</button>
+  </div>
+</header>
+
+<!-- PRODUCT SECTION -->
+<div class="product-container">
+
+  <!-- IMAGE SECTION -->
+  <div class="left">
+    <div class="image-gallery">
+      <div id="thumbnails" class="thumbs"></div>
+      <div class="main-img-wrapper">
+        <span class="img-arrow left-arrow" onclick="prevImage()">&#10094;</span>
+        <img id="mainImage" class="main-img">
+        <span class="img-arrow right-arrow" onclick="nextImage()">&#10095;</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- DETAILS SECTION -->
+  <div class="right">
+    <h2 id="productName"></h2>
+    <h3 id="productPrice"></h3>
+
+    <div id="sizeSection">
+  <h4>Select Size</h4>
+  <div id="sizes"></div>
+</div>
+
+    <button id="addToCartBtn" class="btn" style="width:200px;margin-top:20px;">Add to Cart</button>
+  </div>
+
+</div>
+
+
+<!-- CART TOAST -->
+<div id="cartToast" class="cart-toast">
+  <i class="fas fa-check-circle"></i>
+  <span>Item added to cart</span>
+</div>
+
+
+<!-- SCRIPTS -->
+<script src="js/cart.js"></script>
+<script src="js/products.js"></script>
+<script src="js/product-page.js"></script>
+
+
+<!-- FEATURES STRIP -->
+<section class="features" style="margin-top:40px;">
+  <div class="feature">
+    <i class="fas fa-truck"></i>
+    <h4>Fast Delivery</h4>
+    <p>Quick and reliable shipping</p>
+  </div>
+  <div class="feature">
+    <i class="fas fa-lock"></i>
+    <h4>Secure Payments</h4>
+    <p>100% safe checkout</p>
+  </div>
+  <div class="feature">
+    <i class="fas fa-headset"></i>
+    <h4>24/7 Support</h4>
+    <p>We are here to help</p>
+  </div>
+</section>
+
+
+</body>
+</html>
