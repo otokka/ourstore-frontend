@@ -1,63 +1,78 @@
-function renderOrderHistory() {
+async function renderOrderHistory() {
   const container = document.getElementById("order-history");
   if (!container) return;
 
-  const orders = JSON.parse(localStorage.getItem("orderHistory")) || [];
-  container.innerHTML = "";
+  const token = localStorage.getItem("token");
 
-  if (orders.length === 0) {
-    container.innerHTML = "<p>No orders found.</p>";
+  if (!token) {
+    container.innerHTML = "<p>Please login to view your orders.</p>";
     return;
   }
 
-  orders.forEach((order, index) => {
-    const orderDiv = document.createElement("div");
-    orderDiv.className = "order-card";
+  container.innerHTML = "<p>Loading orders...</p>";
 
-    let total = 0;
+  try {
+    const res = await fetch("https://ecommerce-backend-ei0m.onrender.com/api/orders/my-orders", {
+      method: "GET",
+      headers: {
+        "Authorization": "Bearer " + token
+      }
+    });
 
-    const itemsHTML = order.items.map(item => {
-      const subtotal = item.price * item.qty;
-      total += subtotal;
+    const orders = await res.json();
 
-      return `
-        <div style="display:flex;gap:15px;margin-bottom:10px;">
-          <img src="${item.image}" style="width:70px;height:70px;object-fit:contain;">
-          <div>
-            <strong>${item.name}</strong><br>
-            Qty: ${item.qty}<br>
-            Subtotal: ₹${subtotal}
+    container.innerHTML = "";
+
+    if (orders.length === 0) {
+      container.innerHTML = "<p>No orders found.</p>";
+      return;
+    }
+
+    orders.forEach((order, index) => {
+      const orderDiv = document.createElement("div");
+      orderDiv.className = "order-card";
+
+      const itemsHTML = order.items.map(item => {
+        const subtotal = item.price * item.qty;
+        return `
+          <div style="display:flex;gap:15px;margin-bottom:10px;">
+            <img src="${item.image}" style="width:70px;height:70px;object-fit:contain;">
+            <div>
+              <strong>${item.name}</strong><br>
+              ${item.size ? `Size: ${item.size}<br>` : ""}
+              Qty: ${item.qty}<br>
+              Subtotal: ₹${subtotal}
+            </div>
           </div>
-        </div>
+        `;
+      }).join("");
+
+      const date = new Date(order.createdAt).toLocaleString();
+
+      orderDiv.innerHTML = `
+        <h3>Order #${index + 1}</h3>
+        <p><strong>Date:</strong> ${date}</p>
+        <p><strong>Status:</strong> 
+          <span style="color:${order.status === 'Pending' ? '#f59e0b' : '#22c55e'}">
+            ${order.status}
+          </span>
+        </p>
+        <p><strong>Payment:</strong> ${order.paymentMethod.toUpperCase()}</p>
+        <p><strong>Address:</strong> ${order.address}</p>
+        <hr>
+        ${itemsHTML}
+        <hr>
+        <h4>Total Paid: ₹${order.totalAmount}</h4>
       `;
-    }).join("");
 
-    orderDiv.innerHTML = `
-      <h3>Order #${index + 1}</h3>
-      <p><strong>Date:</strong> ${order.date}</p>
-      <p><strong>Payment:</strong> ${order.payment}</p>
-      <hr>
-      ${itemsHTML}
-      <hr>
-      <h4>Total Paid: ₹${total}</h4>
-    `;
+      container.appendChild(orderDiv);
+    });
 
-    container.appendChild(orderDiv);
-  });
+  } catch (err) {
+    console.error(err);
+    container.innerHTML = "<p>Error loading orders. Please try again.</p>";
+  }
 }
 
-/* Initial load */
 document.addEventListener("DOMContentLoaded", renderOrderHistory);
-
-/* Back / forward navigation */
 window.addEventListener("pageshow", renderOrderHistory);
-
-/* When tab becomes active again */
-document.addEventListener("visibilitychange", function () {
-  if (!document.hidden) {
-    renderOrderHistory();
-  }
-});
-
-/* Disable BFCache safely */
-window.addEventListener("unload", function () {});
