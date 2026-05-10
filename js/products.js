@@ -275,6 +275,8 @@ function bindAddToCartButtons() {
   });
 }
 
+
+
 let searchTimeout = null;
 
 function searchProducts() {
@@ -297,6 +299,15 @@ function searchProducts() {
     );
 
     renderProducts(filteredProducts);
+
+    // Scroll to products section
+    setTimeout(() => {
+      const container = document.getElementById("products");
+      if (container) {
+        container.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 300);
+
   }, 500);
 }
 
