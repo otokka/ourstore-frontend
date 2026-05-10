@@ -67,6 +67,9 @@
       (<span id="cart-count">0</span>)
     </a>
 
+
+    <a id="adminLink" href="admin.html" style="display:none;color:white;text-decoration:none;background:#f59e0b;padding:6px 12px;border-radius:4px;font-weight:600;">Admin</a>
+
     <button onclick="logout()">Logout</button>
 
   </div>
@@ -156,11 +159,16 @@
         window.location.href = "order-history.html";
       });
 
- function logout() {
+ // Show admin link if admin
+const loggedUser = JSON.parse(localStorage.getItem("loggedInUser"));
+if (loggedUser && loggedUser.isAdmin) {
+  document.getElementById("adminLink").style.display = "inline-block";
+}
+
+function logout() {
     localStorage.removeItem("loggedInUser");
     window.location.href = "login.html";
   }
-
   </script>
 
 

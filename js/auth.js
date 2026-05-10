@@ -57,7 +57,7 @@ async function login() {
     }
 
     localStorage.setItem("token", data.token);
-    localStorage.setItem("loggedInUser", JSON.stringify(data.user));
+localStorage.setItem("loggedInUser", JSON.stringify(data.user));
 
     alert("Login successful!");
     window.location.href = "index.html";
