@@ -265,8 +265,19 @@ function sendMessage() {
     return;
   }
 
-  // No products found
-  addChat("bot", "Sorry, we don't have that in our store! Try searching for headphones, shoes, watches, bags, outfits or necklaces! 😊");
+  // No products found — fall back to AI
+  fetch("https://ai-server-ab9y.onrender.com/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message: msg })
+  })
+  .then(res => res.json())
+  .then(data => {
+    addChat("bot", data.reply);
+  })
+  .catch(() => {
+    addChat("bot", "Server error. Try again.");
+  });
 }
 
 function addChat(type, text) {
