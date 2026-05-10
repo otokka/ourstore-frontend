@@ -2,40 +2,22 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Our Store</title>
 
+  <script>
+    if (!localStorage.getItem("loggedInUser")) {
+      window.location.href = "login.html";
+    }
+  </script>
 
-<script>
-  if (!localStorage.getItem("loggedInUser")) {
-    window.location.href = "login.html";
-  }
-</script>
-
-
-
-
-
-
-
-
-  <!-- Font Awesome -->
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-  />
-
-  <!-- Main CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
   <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
 
 <header class="navbar">
-
   <div class="logo">
     <a href="index.html" style="color:white;text-decoration:none;">OurStore</a>
   </div>
@@ -49,7 +31,6 @@
   />
 
   <div class="nav-links">
-
     <a href="wishlist.html">
       <i class="fas fa-bookmark"></i>
     </a>
@@ -67,17 +48,11 @@
       (<span id="cart-count">0</span>)
     </a>
 
-
     <a id="adminLink" href="admin.html" style="display:none;color:white;text-decoration:none;background:#f59e0b;padding:6px 12px;border-radius:4px;font-weight:600;">Admin</a>
 
     <button onclick="logout()">Logout</button>
-
   </div>
-
 </header>
-
-
-
 
 <!-- IMAGE SLIDER -->
 <section class="slider">
@@ -87,7 +62,7 @@
     </div>
   </div>
 
- <div class="slides" style="background-image: url('assets/images/slider2.jpeg');">
+  <div class="slides" style="background-image: url('assets/images/slider2.jpeg');">
     <div class="slide-content">
       <a href="mens.html" class="btn success" style="width:auto;padding:12px 30px;">Shop Men's Collection</a>
     </div>
@@ -103,11 +78,9 @@
     </div>
   </div>
 
-  <!-- Arrows -->
   <span class="arrow left" onclick="prevSlide()">&#10094;</span>
   <span class="arrow right" onclick="nextSlide()">&#10095;</span>
 
-  <!-- Dots -->
   <div class="dots">
     <span onclick="goToSlide(0)"></span>
     <span onclick="goToSlide(1)"></span>
@@ -116,27 +89,37 @@
   </div>
 </section>
 
-
-
-
-  
-
-  <!-- MAIN CONTENT -->
-  <div class="container" id="products">
-    <h2 class="section-title">Featured Products</h2>
-
-    <section class="product-grid" id="productContainer">
-      <!-- Products rendered by JS -->
-    </section>
+<!-- FEATURES STRIP TOP -->
+<section class="features">
+  <div class="feature">
+    <i class="fas fa-truck"></i>
+    <h4>Fast Delivery</h4>
+    <p>Quick and reliable shipping</p>
   </div>
-
-  <!-- CART TOAST -->
-  <div id="cartToast" class="cart-toast">
-    <i class="fas fa-check-circle"></i>
-    <span>Item added to cart</span>
+  <div class="feature">
+    <i class="fas fa-lock"></i>
+    <h4>Secure Payments</h4>
+    <p>100% safe checkout</p>
   </div>
+  <div class="feature">
+    <i class="fas fa-headset"></i>
+    <h4>24/7 Support</h4>
+    <p>We are here to help</p>
+  </div>
+</section>
 
+<!-- MAIN CONTENT -->
+<div class="container" id="products">
+  <h2 class="section-title">Featured Products</h2>
+  <section class="product-grid" id="productContainer">
+  </section>
+</div>
 
+<!-- CART TOAST -->
+<div id="cartToast" class="cart-toast">
+  <i class="fas fa-check-circle"></i>
+  <span>Item added to cart</span>
+</div>
 
 <!-- WISHLIST TOAST -->
 <div id="wishlistToast" class="cart-toast" style="bottom: 80px;">
@@ -144,131 +127,122 @@
   <span>Added to Wishlist!</span>
 </div>
 
+<!-- SCRIPTS -->
+<script src="js/cart.js"></script>
+<script src="js/products.js"></script>
+<script src="js/ai.js"></script>
+<script src="js/slider.js"></script>
 
+<script>
+  document.getElementById("orderHistoryBtn").addEventListener("click", () => {
+    window.location.href = "order-history.html";
+  });
 
-  <!-- SCRIPTS -->
-   <script src="js/cart.js"></script>
-  <script src="js/products.js"></script>
-  <script src="js/ai.js"></script>
-  <script src="js/slider.js"></script>
+  const loggedUser = JSON.parse(localStorage.getItem("loggedInUser"));
+  if (loggedUser && loggedUser.isAdmin) {
+    document.getElementById("adminLink").style.display = "inline-block";
+  }
 
-  <script>
-    document
-      .getElementById("orderHistoryBtn")
-      .addEventListener("click", () => {
-        window.location.href = "order-history.html";
-      });
-
- // Show admin link if admin
-const loggedUser = JSON.parse(localStorage.getItem("loggedInUser"));
-if (loggedUser && loggedUser.isAdmin) {
-  document.getElementById("adminLink").style.display = "inline-block";
-}
-
-function logout() {
+  function logout() {
     localStorage.removeItem("loggedInUser");
+    localStorage.removeItem("token");
     window.location.href = "login.html";
   }
-  </script>
+</script>
 
-
-
-
-
-
-
-<!-- MODERN AI CHATBOX -->
+<!-- AI CHATBOX -->
 <div id="chatbox" class="chatbox">
-
   <div class="chat-header">
     🤖 AI Assistant
     <span id="closeChat">✖</span>
   </div>
-
   <div id="aiChat" class="chat-messages"></div>
-
-
   <div class="chat-input-area">
     <input type="text" id="chat-input" placeholder="Ask me anything...">
     <button id="voiceBtn">🎤</button>
     <button onclick="sendMessage()">➤</button>
   </div>
-
 </div>
-
-
-
-
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-
   const voiceBtn = document.getElementById("voiceBtn");
-
   voiceBtn.onclick = () => {
+    if (!('SpeechRecognition' in window) && !('webkitSpeechRecognition' in window)) {
+      alert("Voice not supported in this browser. Try Chrome!");
+      return;
+    }
     const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-
     recognition.lang = "en-US";
     recognition.start();
-
+    voiceBtn.innerText = "🔴";
     recognition.onresult = function(event) {
       document.getElementById("chat-input").value = event.results[0][0].transcript;
+      voiceBtn.innerText = "🎤";
+      sendMessage();
+    };
+    recognition.onerror = function() {
+      voiceBtn.innerText = "🎤";
+      alert("Microphone access denied. Please allow microphone access!");
     };
   };
-
 });
 </script>
 
-
 <script>
-
 function sendMessage() {
   const input = document.getElementById("chat-input");
   const msg = input.value.toLowerCase().trim();
   if (!msg) return;
 
   addChat("user", msg);
+  input.value = "";
 
-  let response = "Sorry, I didn't understand.";
-
-  // NORMAL SEARCH
   let results = products.filter(p =>
     p.name.toLowerCase().includes(msg)
   );
 
-  // SMART FILTERS
-  if (msg.includes("cheap") || msg.includes("under")) {
+  if (msg.includes("cheap") || msg.includes("under 2000")) {
     results = products.filter(p => p.price <= 2000);
   }
-
-  if (msg.includes("expensive") || msg.includes("above")) {
-    results = products.filter(p => p.price >= 3000);
+  if (msg.includes("expensive") || msg.includes("above 5000")) {
+    results = products.filter(p => p.price >= 5000);
+  }
+  if (msg.includes("women") || msg.includes("female")) {
+    results = products.filter(p => p.category === "womens");
+  }
+  if (msg.includes("men") || msg.includes("male")) {
+    results = products.filter(p => p.category === "mens");
   }
 
-  if (msg.includes("gift")) {
-    results = products.filter(p => p.price <= 2500);
-  }
-
-  // SHOW RESULTS
   if (results.length > 0) {
-    response = "I found these products:<br>";
-
+    let response = "I found these products:<br>";
     results.forEach(p => {
       response += `• ${p.name} — ₹${p.price}<br>`;
     });
+    setTimeout(() => addChat("bot", response), 300);
 
-    
+    const first = results[0];
+    setTimeout(() => {
+      if (first.category === "featured") {
+        scrollToProduct(first.id);
+      } else if (first.category === "mens") {
+        addChat("bot", "Taking you to Men's Collection...");
+        setTimeout(() => window.location.href = "mens.html", 1000);
+      } else if (first.category === "womens") {
+        addChat("bot", "Taking you to Women's Collection...");
+        setTimeout(() => window.location.href = "womens.html", 1000);
+      } else if (first.category === "electronics") {
+        addChat("bot", "Taking you to Electronics...");
+        setTimeout(() => window.location.href = "electronics.html", 1000);
+      }
+    }, 700);
+    return;
   }
-
-  if (results.length > 0) {
-  setTimeout(() => addChat("bot", response), 500);
-} else {
 
   fetch("https://ai-server-ab9y.onrender.com/chat", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ message: msg })
   })
   .then(res => res.json())
@@ -278,12 +252,8 @@ function sendMessage() {
   .catch(() => {
     addChat("bot", "Server error. Try again.");
   });
-
 }
 
-input.value = "";
-
-}
 function addChat(type, text) {
   const chat = document.getElementById("aiChat");
   const msg = document.createElement("div");
@@ -293,76 +263,50 @@ function addChat(type, text) {
   chat.scrollTop = chat.scrollHeight;
 }
 
-
-
-
-
-
 function scrollToProduct(productId) {
   const element = document.getElementById("product-" + productId);
-
   if (element) {
-    element.scrollIntoView({
-      behavior: "smooth",
-      block: "center"
-    });
-
+    element.scrollIntoView({ behavior: "smooth", block: "center" });
     element.style.border = "3px solid #28a745";
-
-    setTimeout(() => {
-      element.style.border = "";
-    }, 2000);
+    setTimeout(() => { element.style.border = ""; }, 2000);
   }
 }
-
-
-
-
-
 </script>
-
-
-
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-
   const btn = document.getElementById("chatbot-btn");
   const box = document.getElementById("chatbox");
   const closeBtn = document.getElementById("closeChat");
 
   btn.addEventListener("click", () => {
-    box.style.display = "flex";
+    box.classList.add("show-chat");
   });
 
   closeBtn.addEventListener("click", () => {
-    box.style.display = "none";
+    box.classList.remove("show-chat");
   });
-
 });
 </script>
 
-
-<!-- FEATURES STRIP (NEW) -->
-  <section class="features">
-    <div class="feature">
-      <i class="fas fa-truck"></i>
-      <h4>Fast Delivery</h4>
-      <p>Quick and reliable shipping</p>
-    </div>
-
-    <div class="feature">
-      <i class="fas fa-lock"></i>
-      <h4>Secure Payments</h4>
-      <p>100% safe checkout</p>
-    </div>
-
-    <div class="feature">
-      <i class="fas fa-headset"></i>
-      <h4>24/7 Support</h4>
-      <p>We are here to help</p>
-    </div>
-  </section>
+<!-- FEATURES STRIP BOTTOM -->
+<section class="features" style="margin-top:40px;">
+  <div class="feature">
+    <i class="fas fa-truck"></i>
+    <h4>Fast Delivery</h4>
+    <p>Quick and reliable shipping</p>
+  </div>
+  <div class="feature">
+    <i class="fas fa-lock"></i>
+    <h4>Secure Payments</h4>
+    <p>100% safe checkout</p>
+  </div>
+  <div class="feature">
+    <i class="fas fa-headset"></i>
+    <h4>24/7 Support</h4>
+    <p>We are here to help</p>
+  </div>
+</section>
 
 </body>
 </html>
