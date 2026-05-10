@@ -91,6 +91,43 @@
 
 
 
+<!-- SHOP BY MOOD -->
+<div class="container">
+  <h2 class="section-title" style="text-align:center;">Shop by Mood 🎯</h2>
+  <p style="text-align:center;color:#666;margin-bottom:25px;">How are you feeling today?</p>
+
+  <div class="mood-grid">
+    <div class="mood-card" onclick="filterByMood('professional')">
+      <div class="mood-icon">💼</div>
+      <h3>Professional</h3>
+      <p>Formal outfits & watches</p>
+    </div>
+    <div class="mood-card" onclick="filterByMood('party')">
+      <div class="mood-icon">🎉</div>
+      <h3>Party Ready</h3>
+      <p>Dresses & accessories</p>
+    </div>
+    <div class="mood-card" onclick="filterByMood('active')">
+      <div class="mood-icon">🏃</div>
+      <h3>Active</h3>
+      <p>Shoes & sporty gear</p>
+    </div>
+    <div class="mood-card" onclick="filterByMood('romantic')">
+      <div class="mood-icon">❤️</div>
+      <h3>Romantic</h3>
+      <p>Jewelry & elegant bags</p>
+    </div>
+  </div>
+
+  <div id="moodResults" style="display:none;">
+    <h3 id="moodTitle" style="margin:20px 0 10px;"></h3>
+    <section class="product-grid" id="moodContainer"></section>
+    <button onclick="clearMood()" style="margin-top:15px;background:transparent;border:1px solid #1f7a4d;color:#1f7a4d;padding:8px 20px;border-radius:8px;cursor:pointer;">✕ Clear Filter</button>
+  </div>
+</div>
+
+
+
 <!-- MAIN CONTENT -->
 <div class="container" id="products">
   <h2 class="section-title">Featured Products</h2>
@@ -316,6 +353,84 @@ document.addEventListener("DOMContentLoaded", function () {
     <p>We are here to help</p>
   </div>
 </section>
+
+
+
+
+<script>
+const moodMap = {
+  professional: {
+    title: "💼 Professional Picks",
+    ids: [103, 104, 101, 102]
+  },
+  party: {
+    title: "🎉 Party Ready Picks",
+    ids: [201, 202, 205, 206]
+  },
+  active: {
+    title: "🏃 Active Picks",
+    ids: [3, 105, 106]
+  },
+  romantic: {
+    title: "❤️ Romantic Picks",
+    ids: [205, 206, 203, 204, 4]
+  }
+};
+
+function filterByMood(mood) {
+  // Highlight selected mood card
+  document.querySelectorAll(".mood-card").forEach(c => c.classList.remove("active"));
+  event.currentTarget.classList.add("active");
+
+  const selected = moodMap[mood];
+  const moodProducts = selected.ids.map(id => products.find(p => p.id === id)).filter(Boolean);
+
+  const container = document.getElementById("moodContainer");
+  const results = document.getElementById("moodResults");
+  const title = document.getElementById("moodTitle");
+
+  title.innerText = selected.title;
+  container.innerHTML = "";
+  results.style.display = "block";
+
+  moodProducts.forEach(product => {
+    const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+    const isSaved = wishlist.includes(product.id);
+
+    const wrapper = document.createElement("a");
+    wrapper.href = "product.html?id=" + product.id;
+    wrapper.style.textDecoration = "none";
+    wrapper.style.color = "inherit";
+    wrapper.style.display = "block";
+
+    const card = document.createElement("div");
+    card.className = "product-card";
+    card.innerHTML = `
+      <div class="bookmark ${isSaved ? "saved" : ""}" data-id="${product.id}">
+        <i class="fas fa-bookmark"></i>
+      </div>
+      <img src="${product.image}" alt="${product.name}">
+      <h3>${product.name}</h3>
+      <p class="price">₹${product.price}</p>
+      <button class="btn add-to-cart-btn" data-id="${product.id}">Add to Cart</button>
+    `;
+
+    wrapper.appendChild(card);
+    container.appendChild(wrapper);
+  });
+
+  // Scroll to results
+  results.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function clearMood() {
+  document.getElementById("moodResults").style.display = "none";
+  document.querySelectorAll(".mood-card").forEach(c => c.classList.remove("active"));
+}
+</script>
+
+
+
 
 </body>
 </html>
