@@ -198,21 +198,46 @@ function sendMessage() {
   addChat("user", msg);
   input.value = "";
 
-  let results = products.filter(p =>
-    p.name.toLowerCase().includes(msg)
-  );
+  // Extract keywords from message
+  const keywords = msg.split(" ").filter(word => word.length > 2);
 
-  if (msg.includes("cheap") || msg.includes("under 2000")) {
+  // Search products by any keyword match
+  let results = products.filter(p => {
+    const productName = p.name.toLowerCase();
+    return keywords.some(keyword => productName.includes(keyword));
+  });
+
+  // Smart filters
+  if (msg.includes("cheap") || msg.includes("budget") || msg.includes("affordable")) {
     results = products.filter(p => p.price <= 2000);
   }
-  if (msg.includes("expensive") || msg.includes("above 5000")) {
+  if (msg.includes("expensive") || msg.includes("luxury") || msg.includes("premium")) {
     results = products.filter(p => p.price >= 5000);
   }
-  if (msg.includes("women") || msg.includes("female")) {
+  if (msg.includes("women") || msg.includes("female") || msg.includes("girl") || msg.includes("lady")) {
     results = products.filter(p => p.category === "womens");
   }
-  if (msg.includes("men") || msg.includes("male")) {
+  if (msg.includes("men") || msg.includes("male") || msg.includes("boy") || msg.includes("guy")) {
     results = products.filter(p => p.category === "mens");
+  }
+
+  // Keyword mappings for synonyms
+  const keywordMap = {
+    "shoe": ["shoes", "sneaker", "footwear", "boot", "kicks"],
+    "watch": ["watch", "timepiece", "clock", "wristwatch"],
+    "bag": ["bag", "handbag", "purse", "tote", "backpack"],
+    "headphone": ["headphone", "earphone", "earbud", "audio", "music"],
+    "outfit": ["outfit", "cloth", "dress", "wear", "suit", "shirt", "pant", "fashion", "style"],
+    "necklace": ["necklace", "jewelry", "jewel", "chain", "diamond", "accessory"]
+  };
+
+  if (results.length === 0) {
+    for (const [key, synonyms] of Object.entries(keywordMap)) {
+      if (synonyms.some(syn => msg.includes(syn))) {
+        results = products.filter(p => p.name.toLowerCase().includes(key));
+        if (results.length > 0) break;
+      }
+    }
   }
 
   if (results.length > 0) {
@@ -240,18 +265,8 @@ function sendMessage() {
     return;
   }
 
-  fetch("https://ai-server-ab9y.onrender.com/chat", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message: msg })
-  })
-  .then(res => res.json())
-  .then(data => {
-    addChat("bot", data.reply);
-  })
-  .catch(() => {
-    addChat("bot", "Server error. Try again.");
-  });
+  // No products found
+  addChat("bot", "Sorry, we don't have that in our store! Try searching for headphones, shoes, watches, bags, outfits or necklaces! 😊");
 }
 
 function addChat(type, text) {
